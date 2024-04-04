@@ -13,13 +13,19 @@ class SpanOperation(Enum):
     BACKGROUND_TASK = auto()
     CUSTOM_OPERATION = auto()
 
+class SpanStatus(Enum):
+    SUCCESS = auto()
+    ERROR = auto()
+    PENDING = auto()
+    CANCELLED = auto()
+
 
 class Span(BaseModel):
     id: str = Field(default_factory=lambda: uuid.uuid4().hex, description="Unique identifier for the span")
     operation_name: SpanOperation = Field(..., description="Type of operation")
     start_time: datetime = Field(default_factory=datetime.utcnow, description="Start time of the operation")
     end_time: Optional[datetime] = Field(None, description="End time of the operation")
-    status: str = Field(..., description="Status of the operation (e.g., success, error)")
+    status: SpanStatus = Field(SpanStatus.PENDING, description="Status of the operation")
     inputs: Dict[str, Any] = Field(default_factory=dict, description="Inputs to the operation")
     outputs: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Outputs of the operation")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata related to the operation")
