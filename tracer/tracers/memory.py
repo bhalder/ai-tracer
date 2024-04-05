@@ -1,8 +1,9 @@
 # in_memory_tracer.py
+from typing import Dict, List, Optional
+
+from tracer.models.span import Span
 from tracer.tracers.base import BaseTracer
-from tracer.models.span import Span, SpanStatus
-from typing import Optional, List, Dict
-import datetime
+
 
 class InMemorySpanDB:
     def __init__(self):
@@ -31,7 +32,9 @@ class InMemorySpanDB:
                 results.append(span)
         return results
 
+
 _db = InMemorySpanDB()
+
 
 class InMemoryTracer(BaseTracer):
     def __init__(self):
@@ -40,4 +43,3 @@ class InMemoryTracer(BaseTracer):
     def process_completed_span(self, span: Span):
         _db.create_span(span)
         pass
-
