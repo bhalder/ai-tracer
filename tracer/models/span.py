@@ -1,3 +1,4 @@
+import uuid
 from enum import Enum, auto
 from typing import List, Optional, Union
 
@@ -6,7 +7,9 @@ from pydantic import BaseModel, Field, root_validator
 
 # BaseModel for KeyValue pairs
 class KeyValue(BaseModel):
-    key: str = Field(..., regex=r"^[a-zA-Z0-9_.]*$", description="Dot format key")
+    key: str = Field(
+        ..., regex=r"^[a-zA-Z0-9_.]*$", description="Dot format key"
+    )  # noqa
     value: Union[
         int, float, str, List["KeyValue"]
     ]  # Forward reference for recursive definition
@@ -19,10 +22,10 @@ class KeyValue(BaseModel):
             # If value is a list of KeyValue, recursively validate each item
             for item in value:
                 if not isinstance(item, KeyValue):
-                    raise ValueError("List value must contain KeyValue instances.")
+                    raise ValueError("List value must contain KeyValue.")
         elif not isinstance(value, (int, float, str)):
             raise ValueError(
-                "Value must be one of int, float, str, or list of KeyValue instances."
+                "Value must be one of int, float, str, or list of KeyValue."
             )
         return values
 
@@ -67,10 +70,10 @@ class SpanKind(Enum):
 
 # BaseModel for Span
 class Span(BaseModel):
-    trace_id: bytes
-    span_id: bytes
+    trace_id: uuid.UUID
+    span_id: uuid.UUID
     trace_state: Optional[str]
-    parent_span_id: bytes
+    parent_span_id: uuid.UUID
     flags: int
     name: str
     kind: SpanKind
@@ -113,7 +116,9 @@ class AIMessageAttributes:
     MESSAGE_NAME = "message.name"
     MESSAGE_TOOL_CALLS = "message.tool_calls"
     MESSAGE_FUNCTION_CALL_NAME = "message.function_call_name"
-    MESSAGE_FUNCTION_CALL_ARGUMENTS_JSON = "message.function_call_arguments_json"
+    MESSAGE_FUNCTION_CALL_ARGUMENTS_JSON = (
+        "message.function_call_arguments_json"  # noqa
+    )
 
 
 # Class to hold constants for Document attributes
